@@ -9,6 +9,7 @@ namespace Editor.Test
     {
         private DroppableListView _droppableListView;
         private List<GameObject> _datas = new List<GameObject>();
+        private DroppableTextField _droppableTextField;
         
         [MenuItem("yaojz/Droppable List")]
         public static void Test()
@@ -23,8 +24,22 @@ namespace Editor.Test
             _droppableListView = new DroppableListView(_datas,"Prefab列表");
             _droppableListView.OnCheckDrop = OnDropItemCheck;
             _droppableListView.OnDropItem = OnDropItem;
+
+            _droppableTextField = new DroppableTextField("DropItem:");
+            _droppableTextField.OnCheckDrop = OnDropItemCheck;
+            _droppableTextField.OnConvertText = OnConvertText;
         }
-        
+
+        private string OnConvertText(UnityEngine.Object[] arg)
+        {
+            if (arg.Length > 1)
+            {
+                return "";
+            }
+            // AssetDatabase.GetAssetPath(arg[0]);
+            return arg[0].name;
+        }
+
         private void OnDropItem(Object item)
         {
             _datas.Add(item as GameObject);
@@ -44,6 +59,9 @@ namespace Editor.Test
         
         private void OnGUI()
         {
+            EditorGUILayout.LabelField("Drag and drop an asset from Project window:");
+            
+            _droppableTextField.DoLayout();
             _droppableListView.DoLayout();
             if (GUILayout.Button("print data"))
             {

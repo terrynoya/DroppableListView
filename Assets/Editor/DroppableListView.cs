@@ -115,6 +115,7 @@ public class DroppableListView
                     OnDropItem?.Invoke(dropObject);
                 }
             }
+            Event.current.Use();
         }
 
         private void DrawCustomTextField(int index)
