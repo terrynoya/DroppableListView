@@ -3,7 +3,7 @@ using UnityEditor;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
-namespace Editor
+namespace Yaojz
 {
     public class DroppableTextField
     {

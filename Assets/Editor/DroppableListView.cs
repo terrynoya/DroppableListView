@@ -5,24 +5,26 @@ using UnityEditor;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
-public class DroppableListView
+namespace Yaojz
+{
+    public class DroppableListView
     {
         private IList _datas;
         private Vector2 scrollPosition;
         private bool _editable;
         private const float DEFAULT_EMPTY_HEIGHT = 20f; // 默认空列表的高度
 
-        public Func<Object[],bool> OnCheckDrop;
+        public Func<Object[], bool> OnCheckDrop;
         public Action<Object> OnDropItem;
         private float? _height;
-        
+
         public readonly GUIStyle headerBackground = "RL Header";
         private readonly GUIStyle emptyHeaderBackground = "RL Empty Header";
         public readonly GUIStyle elementBackground = "RL Element";
 
         public string Title { get; private set; }
 
-        public DroppableListView(IList datas,string title,bool editable = false,float? height = null)
+        public DroppableListView(IList datas, string title, bool editable = false, float? height = null)
         {
             _datas = datas;
             _editable = editable;
@@ -37,7 +39,7 @@ public class DroppableListView
             DrawHeaderBackground(headerRect);
             EditorGUI.LabelField(headerRect, Title);
         }
-        
+
         public void DoLayout()
         {
             // do the custom or default header GUI
@@ -45,7 +47,7 @@ public class DroppableListView
             var headerHeight = 20;
             Rect headerRect = GUILayoutUtility.GetRect(0, headerHeight, GUILayout.ExpandWidth(true));
             DoListHeader(headerRect);
-            
+
             if (_datas.Count == 0)
             {
                 // 如果列表为空，显示提示信息
@@ -57,13 +59,14 @@ public class DroppableListView
             {
                 if (_height != null)
                 {
-                    scrollPosition = EditorGUILayout.BeginScrollView(scrollPosition,boxStyle,GUILayout.Height(_height.Value));
+                    scrollPosition =
+                        EditorGUILayout.BeginScrollView(scrollPosition, boxStyle, GUILayout.Height(_height.Value));
                 }
                 else
                 {
-                    scrollPosition = EditorGUILayout.BeginScrollView(scrollPosition,boxStyle);    
+                    scrollPosition = EditorGUILayout.BeginScrollView(scrollPosition, boxStyle);
                 }
-                
+
                 for (int i = 0; i < _datas.Count; i++)
                 {
                     EditorGUILayout.BeginHorizontal();
@@ -73,8 +76,10 @@ public class DroppableListView
                         _datas.RemoveAt(i);
                         GUIUtility.ExitGUI();
                     }
+
                     EditorGUILayout.EndHorizontal();
                 }
+
                 EditorGUILayout.EndScrollView();
                 DragDrop();
             }
@@ -88,12 +93,12 @@ public class DroppableListView
             {
                 case EventType.DragUpdated:
                 case EventType.DragPerform:
-                    OnDragPerform(dropArea,evt);
+                    OnDragPerform(dropArea, evt);
                     break;
             }
         }
 
-        private void OnDragPerform(Rect dropArea,Event evt)
+        private void OnDragPerform(Rect dropArea, Event evt)
         {
             if (!dropArea.Contains(evt.mousePosition))
                 return;
@@ -102,6 +107,7 @@ public class DroppableListView
             {
                 return;
             }
+
             DragAndDrop.visualMode = DragAndDropVisualMode.Copy;
             if (evt.type == EventType.DragPerform)
             {
@@ -115,6 +121,7 @@ public class DroppableListView
                     OnDropItem?.Invoke(dropObject);
                 }
             }
+
             Event.current.Use();
         }
 
@@ -144,7 +151,7 @@ public class DroppableListView
             //     }
             // }
         }
-        
+
         // draw the default header background
         public void DrawHeaderBackground(Rect headerRect)
         {
@@ -162,3 +169,4 @@ public class DroppableListView
             }
         }
     }
+}
